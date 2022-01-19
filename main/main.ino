@@ -1,7 +1,7 @@
 /*
  * main:
  *  Created on: 16 JAN 2022
- *   Author: Nir Kalay
+ *   Author: NirK12
  */
 
 #include <SD.h>

@@ -1,7 +1,7 @@
  /*
  * sd_card.h
  *  Created on: 16 JAN 2022
- *   Author: Nir Kalay
+ *   Author: NirK12
  */
 
 #ifndef _SD_CARD_H    
