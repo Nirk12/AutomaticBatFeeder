@@ -7,13 +7,6 @@
 #ifndef _SD_CARD_H    
 #define _SD_CARD_H    
 
-//Tests Unit:
-void testunit_get_feeder_name(void);
-
-//END - Tests Unit
-
-
-
 
 
 /*
@@ -32,13 +25,12 @@ RETURN:
 * 1 = Successful
 * 0 = Not successful
 */
-int SD_CARD_toString_writeSD(String str_feeder,
+int SD_CARD_write_event_to_DBtxt(String str_feeder,
                               String str_date,
                               String str_time,
-                              String str_rfid,
+                              int rfid,
                               String str_allowed,
-                              String str_took,
-                              String str_deserving,
+                              int deserving_amount,
                               String str_note);
 
 
@@ -52,7 +44,7 @@ RETURN:
 * e1 = empty file
 * e2 = can't open this file - NAME.txt.
 */
-String readSD_feederName(void);
+String SD_CARD_get_feederName_from_NAMEtxt(void);
 
 
 
@@ -82,6 +74,9 @@ RETURN:
 int * bat_information(String str);
 
 
+
+// return feeder name from local arduino memory
+String SD_CARD_get_feederName(void);
 
 
 #endif

@@ -7,6 +7,9 @@
 #include <SD.h>
 #include <SPI.h>
 #include "sd_card.h"
+#include "bat.h"
+
+
 
 //Global objects:
 File myFile;
@@ -17,32 +20,13 @@ const String FILE_BAT_LIST = "BatList.txt";
 
 const int PIN_CS = 2; // PIN D10 - on "Arduino Nano"
 const int DELAY_BETWEEN_STEP = 200; 
-const int RATE = 9600;
 //const int RFID_LENGHT = 4; //1001
-const String START = "Start";
-const String HASH_MARK = "###";
+const char START []= "Start";
+const char HASH_MARK []= "###";
 
 static String FEEDER_NAME = "8888";//Defult name 
 static int *bufferBatData; // [0]RFID###[1]Took###[2]Allowed
 
-
-//Tests Unit:
-void testunit_get_feeder_name(void){
-    int res;
-  res = SD_CARD_init();
-  if(res == 0){
-    Serial.println("NirPost>> Error in - SD_CARD_init()");
-  }
-  else{
-    Serial.println("NirPost>> Seccess - SD_CARD_init()");
-  }
-  
-  Serial.println("$$$");
-  Serial.println(FEEDER_NAME);
-  Serial.println("$$$");
-}
-
-//END - Tests Unit
 
 
 
@@ -50,24 +34,25 @@ void testunit_get_feeder_name(void){
 int SD_CARD_init(void)
 {
   //First Setup - SD Card configuration
-  Serial.begin(RATE);
+
   //while (!Serial) {
      // wait for serial port to connect. Needed for native USB port only
   //}
   
   pinMode(PIN_CS,OUTPUT);
 
-  // SD Card Initialzation
+  // SD Card Initialzation - CS - 2
   if(SD.begin() ){
-    Serial.println("NirPost>> SD card is ready to use.");
+    //Serial.println("\n\nNirPost>> SD card is ready to use.");
 	
 	  if(!(SD.exists(FILE_RESULTS_REPORT)) ){
 		  myFile = SD.open(FILE_RESULTS_REPORT, FILE_WRITE);
 		  delay(DELAY_BETWEEN_STEP);
+      //Serial.println("NirPost>> Create new file 'DB.txt' ");
 		  myFile.println(START);
 		  myFile.close();
 	  }
-  FEEDER_NAME = readSD_feederName();
+  FEEDER_NAME = SD_CARD_get_feederName_from_NAMEtxt(); 
 	return 1;
   }
   
@@ -80,22 +65,20 @@ int SD_CARD_init(void)
 
 
 
-int SD_CARD_toString_writeSD(String str_feeder,
+int SD_CARD_write_event_to_DBtxt(String str_feeder,
                               String str_date,
                               String str_time,
-                              String str_rfid,
+                              int rfid,
                               String str_allowed,
-                              String str_took,
-                              String str_deserving,
+                              int deserving_amount,
                               String str_note){
   
   String finalStr = str_feeder + HASH_MARK
                    + str_date + HASH_MARK
                    + str_time + HASH_MARK
-                   + str_rfid + HASH_MARK
+                   + rfid + HASH_MARK
                    + str_allowed + HASH_MARK 
-                   + str_took + HASH_MARK
-                   + str_deserving + HASH_MARK
+                   + deserving_amount + HASH_MARK
                    + str_note;
                         
   //Start - Create/Open file
@@ -103,14 +86,14 @@ int SD_CARD_toString_writeSD(String str_feeder,
 
   // if the file opened okay, write to it:
   if(myFile){
-    Serial.println("NirPost>> Writing to file new bat update - DB.txt");
+    //Serial.println("NirPost>> Writing to file new bat update - DB.txt");
     //
     //Write to file-->
 	
     delay(DELAY_BETWEEN_STEP);
 	  myFile.println(finalStr);
     myFile.close();
-    Serial.println("Done.");
+    //Serial.println("Done.");
     return 1; // Successful = 1
   }
   
@@ -125,11 +108,11 @@ int SD_CARD_toString_writeSD(String str_feeder,
 
 
 
-String readSD_feederName(void){
+String SD_CARD_get_feederName_from_NAMEtxt(void){
   File file = SD.open(FILE_FEEDER_NAME, FILE_READ); //FILE_RESULTS_REPORT - FILE_FEEDER_NAME - FILE_BAT_LIST
   //delay(1000);
   if(file){
-    Serial.println("NirPost>> Reading from file - " + FILE_FEEDER_NAME);
+    //Serial.println("NirPost>> Reading from file - " + FILE_FEEDER_NAME);
     String res;
     boolean findFormat = false;
     
@@ -151,7 +134,7 @@ String readSD_feederName(void){
     return "e2";
   }
 
-}//endOf func - readSD_feederName
+}//endOf func - SD_CARD_get_feederName()
 
 
 
@@ -161,7 +144,7 @@ int SD_CARD_get_bat_allowed(int rfid){
   File file = SD.open(FILE_BAT_LIST, FILE_READ); //FILE_RESULTS_REPORT - FILE_FEEDER_NAME - FILE_BAT_LIST
   //delay(rfid);
   if(file){
-    Serial.println("NirPost>> Reading from file - " + FILE_BAT_LIST);
+    //Serial.println("NirPost>> Reading from file - " + FILE_BAT_LIST);
     
     String res;
     char temp_c;
@@ -171,7 +154,7 @@ int SD_CARD_get_bat_allowed(int rfid){
       temp_c = char(file.read());
 
       //finish to read number
-      if(!findBat && temp_c == '#'){
+      if(!findBat && (temp_c == '#' || temp_c == '\n') ){
         
        //the number is the bat we looking for?
         if(rfid == res.toInt() ){
@@ -240,8 +223,18 @@ int * bat_information(String str){
     loc+=3;
   }
     
-
+  //Serial.println("$$$");
   //Serial.println(batInfo[0]);
+  //Serial.println(batInfo[1]);
+  //Serial.println(batInfo[2]);
+  //Serial.println("$$$");
   
   return batInfo;
 }//endOf func - [] bat_information()
+
+
+
+
+String SD_CARD_get_feederName(void){
+  return FEEDER_NAME;
+}
