@@ -20,6 +20,7 @@
 class DS3231 {
 	
   private:
+
     // Convert normal decimal numbers to binary coded decimal
     byte decToBcd(byte val); 
     
@@ -100,17 +101,17 @@ class DS3231 {
 
     
 	public:	
+
     //Objects:
     bool am_pm = false;
     uint8_t DoW = 1; //Day on Week, 1 = Sun, 2= Mon ...... , 7 = Saturday.
-		uint8_t DoM = 1; // the number in the date.
+    uint8_t DoM = 1; // the number in the date.
     uint8_t month = 1;
     uint8_t year = 20; //Only the last 2 digits,for 2022 enter only 22.  
     uint8_t hour = 0;
     uint8_t minute = 0;
     uint8_t second = 0;
-		TwoWire & _Wire;
-
+    TwoWire & _Wire;
 
     /***************************************** 
     Class Constructors
@@ -123,7 +124,7 @@ class DS3231 {
     Main Functions
     *****************************************/
     //setup date and time
-    void setDateAndTime(void);
+    void setupDateAndTime(void);
     
     // get Time in format "h:m:s"
     String getTime(void);

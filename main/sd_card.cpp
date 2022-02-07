@@ -7,7 +7,7 @@
 #include <SD.h>
 #include <SPI.h>
 #include "sd_card.h"
-#include "bat.h"
+
 
 
 
@@ -22,23 +22,18 @@ const int PIN_CS = 2; // PIN D10 - on "Arduino Nano"
 const int DELAY_BETWEEN_STEP = 200; 
 //const int RFID_LENGHT = 4; //1001
 const char START []= "Start";
-const char HASH_MARK []= "###";
+const char HASH_MARK [] = "###";
 
-static String FEEDER_NAME = "8888";//Defult name 
+static String FEEDER_NAME = "";//Defult name 
 static int *bufferBatData; // [0]RFID###[1]Took###[2]Allowed
-
+//static String finalStr;
 
 
 
 
 int SD_CARD_init(void)
 {
-  //First Setup - SD Card configuration
-
-  //while (!Serial) {
-     // wait for serial port to connect. Needed for native USB port only
-  //}
-  
+  SPI.begin();
   pinMode(PIN_CS,OUTPUT);
 
   // SD Card Initialzation - CS - 2
@@ -72,7 +67,7 @@ int SD_CARD_write_event_to_DBtxt(String str_feeder,
                               String str_allowed,
                               int deserving_amount,
                               String str_note){
-  
+  //str_feeder + HASH_MARK+ str_date + HASH_MARK+ str_time + HASH_MARK+ rfid + HASH_MARK+ str_allowed + HASH_MARK + deserving_amount + HASH_MARK+ str_note
   String finalStr = str_feeder + HASH_MARK
                    + str_date + HASH_MARK
                    + str_time + HASH_MARK
@@ -80,18 +75,18 @@ int SD_CARD_write_event_to_DBtxt(String str_feeder,
                    + str_allowed + HASH_MARK 
                    + deserving_amount + HASH_MARK
                    + str_note;
-                        
+                      
   //Start - Create/Open file
   myFile = SD.open(FILE_RESULTS_REPORT, FILE_WRITE);
-
+  
   // if the file opened okay, write to it:
   if(myFile){
     //Serial.println("NirPost>> Writing to file new bat update - DB.txt");
     //
-    //Write to file-->
-	
+    //Write to file--> 
     delay(DELAY_BETWEEN_STEP);
 	  myFile.println(finalStr);
+   //delay(DELAY_BETWEEN_STEP);
     myFile.close();
     //Serial.println("Done.");
     return 1; // Successful = 1
@@ -142,7 +137,7 @@ String SD_CARD_get_feederName_from_NAMEtxt(void){
 
 int SD_CARD_get_bat_allowed(int rfid){
   File file = SD.open(FILE_BAT_LIST, FILE_READ); //FILE_RESULTS_REPORT - FILE_FEEDER_NAME - FILE_BAT_LIST
-  //delay(rfid);
+ 
   if(file){
     //Serial.println("NirPost>> Reading from file - " + FILE_BAT_LIST);
     

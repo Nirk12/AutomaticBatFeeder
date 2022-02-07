@@ -27,14 +27,14 @@ DS3231::DS3231(TwoWire & w) : _Wire(w) {
 }
 
 DS3231::DS3231(bool aAM_PM,uint8_t aDoW,uint8_t aDoM, uint8_t aMonth, uint8_t aYear, uint8_t aHour, uint8_t aMinute, uint8_t aSecond){
-  bool am_pm = aAM_PM;
-  uint8_t DoW = aDoW;
-  uint8_t DoM = aDoM;
-  uint8_t month = aMonth;
-  uint8_t year = aYear; 
-  uint8_t hour = aHour;
-  uint8_t minute = aMinute;
-  uint8_t second = aSecond;
+  am_pm = aAM_PM;
+  DoW = aDoW;
+  DoM = aDoM;
+  month = aMonth;
+  year = aYear; 
+  hour = aHour;
+  minute = aMinute;
+  second = aSecond;
 }
 
 
@@ -48,7 +48,7 @@ DS3231::DS3231(bool aAM_PM,uint8_t aDoW,uint8_t aDoM, uint8_t aMonth, uint8_t aY
  * 2) String getDate(void)
  ******************************************************************************/
 
-void DS3231::setDateAndTime(void){
+void DS3231::setupDateAndTime(void){
   //AM or PM
   setClockMode(am_pm);
   //Clock

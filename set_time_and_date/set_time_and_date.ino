@@ -6,6 +6,7 @@
 
 #include "DS3231.h"
 
+//Global Objects:
 DS3231 rtc;
 bool flag_date = false;
 bool flag_time = false;
@@ -15,7 +16,7 @@ String s_time;
 
 
 
-//SUN/30/1/22
+//Like: SUN/30/1/22
 bool dateExtraction(String d){
   String str= "";
   int i = 0;
@@ -77,11 +78,11 @@ bool dateExtraction(String d){
   else return false;
 
   return true;
-}//END - dateExtraction
+}//END - func dateExtraction
 
 
 
-//13:45:00
+//Like: 13:45:00
 bool timeExtraction(String t){
   String str= "";
   int i = 0;
@@ -125,7 +126,7 @@ bool timeExtraction(String t){
   else return false;
 
   return true;
-}//END - timeExtraction
+}//END - func timeExtraction
 
 
 
@@ -149,7 +150,7 @@ void setup(){
   /******************* 
     CALL FUNCTION THAT SETUP - TIME & DATE
   ******************/
-  //rtc.setDateAndTime();
+  //rtc.setupDateAndTime();
   Serial.println("\n####################################################");
   Serial.println("################Welcome to RTC Setup################");
   Serial.println("####################################################");
@@ -188,7 +189,7 @@ void loop() {
   }  
   if(!flag_done && flag_date && flag_time){
     flag_done = true;
-    rtc.setDateAndTime();
+    rtc.setupDateAndTime();
     Serial.println("\n############################");
     Serial.println("####Date&Time was setup!####\n####Your RTC ready to use####\n#############Done!#############");   
   }
