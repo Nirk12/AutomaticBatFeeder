@@ -63,11 +63,11 @@ int SD_CARD_init(void)
 int SD_CARD_write_event_to_DBtxt(String str_feeder,
                               String str_date,
                               String str_time,
-                              int rfid,
+                              String rfid,
                               String str_allowed,
                               int deserving_amount,
                               String str_note){
-  //str_feeder + HASH_MARK+ str_date + HASH_MARK+ str_time + HASH_MARK+ rfid + HASH_MARK+ str_allowed + HASH_MARK + deserving_amount + HASH_MARK+ str_note
+  
   String finalStr = str_feeder + HASH_MARK
                    + str_date + HASH_MARK
                    + str_time + HASH_MARK
@@ -88,7 +88,7 @@ int SD_CARD_write_event_to_DBtxt(String str_feeder,
 	  myFile.println(finalStr);
    //delay(DELAY_BETWEEN_STEP);
     myFile.close();
-    //Serial.println("Done.");
+    //Serial.println("SD Done.");
     return 1; // Successful = 1
   }
   
@@ -135,7 +135,7 @@ String SD_CARD_get_feederName_from_NAMEtxt(void){
 
 
 
-int SD_CARD_get_bat_allowed(int rfid){
+int SD_CARD_get_bat_allowed(String rfid){
   File file = SD.open(FILE_BAT_LIST, FILE_READ); //FILE_RESULTS_REPORT - FILE_FEEDER_NAME - FILE_BAT_LIST
  
   if(file){
@@ -152,7 +152,7 @@ int SD_CARD_get_bat_allowed(int rfid){
       if(!findBat && (temp_c == '#' || temp_c == '\n') ){
         
        //the number is the bat we looking for?
-        if(rfid == res.toInt() ){
+        if(rfid == res){     //res.toInt() ){
           findBat = true;
         }
         else{

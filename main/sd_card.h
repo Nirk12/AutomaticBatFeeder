@@ -28,7 +28,7 @@ RETURN:
 int SD_CARD_write_event_to_DBtxt(String str_feeder,
                               String str_date,
                               String str_time,
-                              int rfid,
+                              String rfid,
                               String str_allowed,
                               int deserving_amount,
                               String str_note);
@@ -58,7 +58,7 @@ RETURN:
 * -3 = This bat not in our list.
 * -4 = can't open this file - BatList.txt.
 */
-int SD_CARD_get_bat_allowed(int rfid);
+int SD_CARD_get_bat_allowed(String rfid);
 
 
 
