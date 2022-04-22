@@ -8,6 +8,9 @@
 #ifndef _ML134_H
 #define _ML134_H
 
+#include "sd_card.h"
+#include "DS3231.h"
+
 
 //RFID_Error_None = 0
 //RFID_Error_PacketSize             = 0x81 = 129
@@ -53,10 +56,19 @@ template<class T_SERIAL_METHOD, class T_NOTIFICATION_METHOD  > class ML134{
     }
 
 
-    String loop(void){
-      while (_serial.available() >= RFID_Packet_SIZE){ // RFID_Packet_SIZE == 30
+    void loop(String FN, DS3231 rtc){
+      int flag;
+      
+      // RFID_Packet_SIZE == 30
+      while (_serial.available() >= RFID_Packet_SIZE){ 
         String res = readPacket();               // RFID_Error_None == 0
-        return res;
+        flag = SD_CARD_write_event_to_DBtxt(FN,rtc.getDate(),rtc.getTime(),res,"Yes",0,"n");
+        if(flag == 1){
+          Serial.println(res);
+        }
+        else{
+         Serial.println("Error"); 
+        }
       }
   }
 

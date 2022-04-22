@@ -38,12 +38,12 @@ int SD_CARD_init(void)
 
   // SD Card Initialzation - CS - 2
   if(SD.begin() ){
-    //Serial.println("\n\nNirPost>> SD card is ready to use.");
+    //Serial.println("\n\nSysPost>> SD card is ready to use.");
 	
 	  if(!(SD.exists(FILE_RESULTS_REPORT)) ){
 		  myFile = SD.open(FILE_RESULTS_REPORT, FILE_WRITE);
 		  delay(DELAY_BETWEEN_STEP);
-      //Serial.println("NirPost>> Create new file 'DB.txt' ");
+      //Serial.println("SysPost>> Create new file 'DB.txt' ");
 		  myFile.println(START);
 		  myFile.close();
 	  }
@@ -52,7 +52,7 @@ int SD_CARD_init(void)
   }
   
   else{
-    Serial.println("NirPost>> SD card initialzation failed.");
+    Serial.println("SysPost>> SD card initialzation failed.");
 	return 0;
   }
 }// endOf func - SD_CARD_init
@@ -81,7 +81,7 @@ int SD_CARD_write_event_to_DBtxt(String str_feeder,
   
   // if the file opened okay, write to it:
   if(myFile){
-    //Serial.println("NirPost>> Writing to file new bat update - DB.txt");
+    //Serial.println("SysPost>> Writing to file new bat update - DB.txt");
     //
     //Write to file--> 
     delay(DELAY_BETWEEN_STEP);
@@ -94,7 +94,7 @@ int SD_CARD_write_event_to_DBtxt(String str_feeder,
   
   // if the file didn't open, print an error:
   else{
-    Serial.println("NirPost>> Error opening "+ FILE_RESULTS_REPORT);
+    Serial.println("SysPost>> Error opening "+ FILE_RESULTS_REPORT);
 	  return 0;
   }
 
@@ -107,7 +107,7 @@ String SD_CARD_get_feederName_from_NAMEtxt(void){
   File file = SD.open(FILE_FEEDER_NAME, FILE_READ); //FILE_RESULTS_REPORT - FILE_FEEDER_NAME - FILE_BAT_LIST
   //delay(1000);
   if(file){
-    //Serial.println("NirPost>> Reading from file - " + FILE_FEEDER_NAME);
+    //Serial.println("SysPost>> Reading from file - " + FILE_FEEDER_NAME);
     String res;
     boolean findFormat = false;
     
@@ -125,7 +125,7 @@ String SD_CARD_get_feederName_from_NAMEtxt(void){
     return res;
   }
   else{
-    Serial.println("NirPost>> Error opening "+ FILE_FEEDER_NAME);
+    Serial.println("SysPost>> Error opening "+ FILE_FEEDER_NAME);
     return "e2";
   }
 
@@ -139,7 +139,7 @@ int SD_CARD_get_bat_allowed(String rfid){
   File file = SD.open(FILE_BAT_LIST, FILE_READ); //FILE_RESULTS_REPORT - FILE_FEEDER_NAME - FILE_BAT_LIST
  
   if(file){
-    //Serial.println("NirPost>> Reading from file - " + FILE_BAT_LIST);
+    //Serial.println("SysPost>> Reading from file - " + FILE_BAT_LIST);
     
     String res;
     char temp_c;
@@ -194,7 +194,7 @@ int SD_CARD_get_bat_allowed(String rfid){
   
   //if this file can't open
   else{
-    Serial.println("NirPost>> Error opening "+ FILE_BAT_LIST);
+    Serial.println("SysPost>> Error opening "+ FILE_BAT_LIST);
     return -4;
   }
 }//endOf func - SD_CARD_get_bat_allowed
