@@ -10,7 +10,7 @@
 #include "DS3231.h"
 #include "data_message.h"
 #include "ML134.h"
-
+#include "feeder.h"
 
 //Global objects:
 #define BUFFER_MESSAGE_SIZE  5  // "Future feature"
