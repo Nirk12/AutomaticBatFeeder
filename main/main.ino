@@ -9,7 +9,7 @@
 #include "sd_card.h"
 #include "DS3231.h"
 #include "data_message.h"
-#include "ML134.h" 
+#include "ML134.h"
 
 
 //Global objects:
@@ -28,6 +28,7 @@ void setup(){
   SD_CARD_init();      //init SD Card
   Wire.begin();        //init RTC legs - SCL+SDA
   FN = SD_CARD_get_feederName();
+  FEEDER_init();
   
   if(SD_CARD_write_event_to_DBtxt(FN,rtc.getDate(),rtc.getTime(),"-","-",0,"SPO")){
     rfid.begin();
