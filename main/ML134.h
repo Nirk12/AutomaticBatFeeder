@@ -10,6 +10,7 @@
 
 #include "sd_card.h"
 #include "DS3231.h"
+#include "Feeder.h"
 
 
 //RFID_Error_None = 0
@@ -17,6 +18,10 @@
 //RFID_Error_PacketEndCodeMissmatch = 0x82 = 130
 //RFID_Error_PacketChecksum         = 0x83 = 131
 //RFID_Error_PacketChecksumInvert   = 0x84 = 132
+
+int LitchiNumber = 0;
+int IOLitchi = 0;
+
 enum RFID_Error{
     RFID_Error_None,
 
@@ -58,17 +63,37 @@ template<class T_SERIAL_METHOD, class T_NOTIFICATION_METHOD  > class ML134{
 
     void loop(String FN, DS3231 rtc){
       int flag;
-      
+      randomSeed(analogRead(A0)); //initializes the pseudo-random number generator
+      long randNumber = (random(100)/100);//Normalized random number
+
       // RFID_Packet_SIZE == 30
       while (_serial.available() >= RFID_Packet_SIZE){ 
         String res = readPacket();               // RFID_Error_None == 0
-        flag = SD_CARD_write_event_to_DBtxt(FN,rtc.getDate(),rtc.getTime(),res,"Yes",0,"n");
+		    long BatProbability = SD_CARD_get_bat_allowed(res);//The that we read from the RFID list
+
+        if (randNumber <= BatProbability){ 
+          LitchiNumber =+ 1;
+			    IOLitchi = FEEDER_get_litchi(6);
+			    
+			    if(IOLitchi == 1){
+				    Serial.println("Litchi got out");
+			    }
+          if (LitchiNumber%2 == 0){
+            FEEDER_replace();
+          } 
+        }
+        
         if(flag == 1){
           Serial.println(res);
         }
         else{
-         Serial.println("Error"); 
+          Serial.println("Error"); 
         }
+        //FN###date###time###RFID###Probebility###random###If got out
+        int quantity = 0; //randNumber
+        quantity = SD_CARD_get_bat_allowed(res);
+        Serial.println(quantity);
+		    flag = SD_CARD_write_event_to_DBtxt(FN,rtc.getDate(),rtc.getTime(),res,String(BatProbability),quantity,String(IOLitchi));
       }
   }
 

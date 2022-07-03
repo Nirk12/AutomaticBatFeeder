@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <Arduino.h>
 #include "Feeder.h"
-#include <virtuabotixRTC.h> 
+//#include <virtuabotixRTC.h> 
 
 
 //Set the pins for the arduino:
@@ -27,11 +27,11 @@ int const OPTO_SWITCH_PIN = A1;
 int const LIGHT_SENSOR_PIN = A0;
 
 //pin for Read switch
-int const READ_SWITCH_PIN = 6;
+int const READ_SWITCH_PIN = A2;
 
 //Stepper setup loctions. 200 steps is a one cycle
-int const STEPS_TO_OPEN = 60;
-int const STEPS_TO_CLOSE = 40; 
+int const STEPS_TO_OPEN = 100;
+int const STEPS_TO_CLOSE = 0; 
 int const OS_THRESHOLD = 750; //Threshold for optoswich
 unsigned long TIME_INTERVAL_REPLACE = 3000; //Time that replace is running
 
@@ -53,7 +53,7 @@ void FEEDER_init(void){
 
 //speed value is between 0 to 20 (0 slow, 20 high speed)
 bool FEEDER_get_litchi(int speed = 18){
-	bool LitchiFlag = false; //Induction of the litchi getting out
+	int LitchiFlag = false; //Induction of the litchi getting out
 	
 	//Check Speed Value is in the correct range
 	if (speed > 20 || speed < 0){
@@ -71,6 +71,7 @@ bool FEEDER_get_litchi(int speed = 18){
 		  delayMicroseconds(speed);	  
 		  digitalWrite(STEP_PIN,LOW); 
 		  LitchiFlag = analogRead(OPTO_SWITCH_PIN);
+		  Serial.print(LitchiFlag);
 		  delayMicroseconds(speed);
 		  if(LitchiFlag >= OS_THRESHOLD){
 			for(int x = 0; x < STEPS_TO_CLOSE ; x++){ //close the hole aftter the litchi got out
@@ -91,6 +92,7 @@ bool FEEDER_get_litchi(int speed = 18){
 		  delayMicroseconds(speed);
 		  digitalWrite(STEP_PIN,LOW);
 		  LitchiFlag = analogRead(OPTO_SWITCH_PIN);
+		  Serial.print(LitchiFlag);
 		  delayMicroseconds(speed);
 		  if(LitchiFlag >= OS_THRESHOLD){
 			  for(int x = 0; x < STEPS_TO_CLOSE; x++){//close the hole aftter the litchi got out
